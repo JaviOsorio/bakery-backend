@@ -21,7 +21,10 @@ export class TaskService {
   }
 
   async findOne(id: number) {
-    return await this.taskRepo.findOne({ where: { id } });
+    return await this.taskRepo.findOne({
+      where: { id },
+      relations: ['product', 'product.items.ingredient', 'details.ingredient'],
+    });
   }
 
   async create(data: CreateTaskDto) {
@@ -40,7 +43,21 @@ export class TaskService {
 
   async update(id: number, changes: any) {
     const task = await this.findOne(id);
+    if (changes.productId) {
+      const product = await this.productRepo.findOne({
+        where: { id: changes.productId },
+      });
+      if (!product) {
+        throw new NotFoundException(`Product not found`);
+      }
+      task.product = product;
+    }
     this.taskRepo.merge(task, changes);
     return await this.taskRepo.save(task);
+  }
+
+  async remove(id: number) {
+    const task = await this.findOne(id);
+    return await this.taskRepo.delete(id);
   }
 }

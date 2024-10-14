@@ -35,18 +35,21 @@ export class TaskController {
   @Roles(Role.SUPERADMIN, Role.ADMIN)
   @Post()
   async create(@Body() payload: CreateTaskDto) {
+    console.log(payload);
     return await this.taskService.create(payload);
   }
 
   @Roles(Role.SUPERADMIN, Role.ADMIN)
   @Put(':id')
   async update(@Param('id') id: number, @Body() changes: any) {
+    console.log(changes);
+    
     return await this.taskService.update(id, changes);
   }
 
-  // @Roles(Role.SUPERADMIN, Role.ADMIN)
-  // @Delete(':id')
-  // async remove(@Param('id') id: number) {
-  //   return await this.taskService.remove(id);
-  // }
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Delete(':id')
+  async remove(@Param('id') id: number) {
+    return await this.taskService.remove(id);
+  }
 }

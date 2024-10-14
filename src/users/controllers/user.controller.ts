@@ -18,7 +18,7 @@ import { Roles } from './../../auth/decorators/roles.decorator';
 import { Role } from 'src/auth/models/roles.model';
 import { Public } from './../../auth/decorators/public.decorator';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+// @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 @ApiTags('Users')
 export class UserController {

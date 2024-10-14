@@ -33,6 +33,19 @@ export class ItemsService {
     return recipe;
   }
 
+  async findByProductId(productId: number) {
+    const items = await this.itemsRepo.find({
+      where: {
+        product: { id: productId },
+      },
+      relations: ['ingredient'],
+    });
+    if (!items || items.length === 0) {
+      throw new NotFoundException('Items not found');
+    }
+    return items;
+  }
+
   async create(data: CreateItemDto) {
     const newRecipe = await this.itemsRepo.create(data);
     if (data.productId) {
@@ -88,7 +101,22 @@ export class ItemsService {
   }
 
   async remove(id: number) {
-    const recipe = await this.findOne(id);
-    return this.itemsRepo.delete(id);
+    const items = await this.findByProductId(id);
+
+    // Verificar si hay elementos asociados a la receta
+    if (!items || items.length === 0) {
+      throw new NotFoundException('No hay elementos asociados a esta receta.');
+    }
+
+    // Obtener los IDs de los elementos a eliminar
+    const itemIds = items.map((item) => item.id); // Asegúrate de que 'id' sea el campo correcto
+
+    // Eliminar los elementos
+    await this.itemsRepo.delete(itemIds);
+
+    // (Opcional) Si necesitas eliminar la receta después de eliminar sus elementos
+    // await this.recipesRepo.delete(recipeId);
+
+    return { message: 'Elementos eliminados correctamente.' };
   }
 }
