@@ -16,7 +16,8 @@ export class TaskDetailService {
     @InjectRepository(TaskDetail)
     private readonly taskDetailRepo: Repository<TaskDetail>,
     @InjectRepository(Task) private readonly taskRepo: Repository<Task>,
-    @InjectRepository(Ingredient) private readonly ingredienRepo: Repository<Ingredient>,
+    @InjectRepository(Ingredient)
+    private readonly ingredienRepo: Repository<Ingredient>,
   ) {}
 
   async findAll() {
