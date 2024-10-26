@@ -20,7 +20,11 @@ export class IngredientService {
   ) {}
 
   async findAll() {
-    return await this.ingredientRepo.find();
+    return await this.ingredientRepo.find({
+      order: {
+        name: 'ASC',
+      },
+    });
   }
 
   async findOne(id: number) {

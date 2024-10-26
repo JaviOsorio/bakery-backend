@@ -16,7 +16,7 @@ export class Items {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'float' })
   cuantity: number;
 
   @Column({ name: 'control_unit', type: 'varchar', length: 255 })
