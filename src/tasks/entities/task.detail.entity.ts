@@ -22,6 +22,9 @@ export class TaskDetail {
   @JoinColumn({ name: 'ingredient_id' })
   ingredient: Ingredient;
 
+  @Column({ name: 'item_id' })
+  itemId: number;
+
   @ManyToOne(() => Task, (task) => task.details)
   @JoinColumn({
     name: 'task_id',

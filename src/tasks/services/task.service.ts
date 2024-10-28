@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Task } from './../entities/task.entity';
 import { Product } from './../../recipes/entities/product.entity';
 import { CreateTaskDto } from './../dtos/task.dtos';
+import { TaskDetailService } from './task.detail.service';
 
 @Injectable()
 export class TaskService {
@@ -12,6 +13,7 @@ export class TaskService {
     @InjectRepository(Task) private readonly taskRepo: Repository<Task>,
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
+    private taskDetailService: TaskDetailService,
   ) {}
 
   async findAll() {
@@ -96,6 +98,7 @@ export class TaskService {
     if (data.productId) {
       const product = await this.productRepo.findOne({
         where: { id: data.productId },
+        relations: ['items', 'items.ingredient'],
       });
       if (!product) {
         throw new NotFoundException(`Product not found`);
@@ -104,7 +107,15 @@ export class TaskService {
     }
     for (let index = 1; index <= data.repetition; index++) {
       newTask.repetition = 1;
-      this.taskRepo.save(newTask);
+      const taskCreated = this.taskRepo.save(newTask);
+      // Create detail task
+      // if (taskCreated) {
+      //   // await this.taskDetailService.create({
+      //   //   ingredientId: ,
+      //   //   weight: ,
+      //   //   taskId: taskCreated.id,
+      //   // });
+      // }
     }
     return data;
   }

@@ -47,6 +47,7 @@ export class TaskDetailService {
     // Crear el nuevo `TaskDetail`
     const newTaskDetail = this.taskDetailRepo.create({
       weight: data.weight,
+      itemId: data.itemId,
       ingredient,
       task,
     });
