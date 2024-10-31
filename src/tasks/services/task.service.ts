@@ -26,6 +26,7 @@ export class TaskService {
     const ingredients = await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient'],
     });
+
     // Creamos dos objetos para almacenar la agrupación de los ingredientes tanto en items como en details.
     const itemSummary = {};
     const detailSummary = {};
@@ -37,15 +38,18 @@ export class TaskService {
         const ingredientName = item.ingredient.name;
         const controlUnit = item.controlUnit;
 
+        // Asegúrate de que cuantity sea un número
+        const quantity = Number(item.cuantity); // Convierto a número
+
         // Si el ingrediente ya existe en el objeto, sumamos la cantidad.
         if (itemSummary[ingredientId]) {
-          itemSummary[ingredientId].cuantity += item.cuantity;
+          itemSummary[ingredientId].cuantity += quantity; // Sumar cantidades
         } else {
           // Si no existe, lo creamos con la cantidad actual.
           itemSummary[ingredientId] = {
             id: ingredientId,
             name: ingredientName,
-            cuantity: item.cuantity,
+            cuantity: quantity, // Guardar cantidad como número
             controlUnit,
           };
         }
@@ -58,15 +62,18 @@ export class TaskService {
         const ingredientId = detail.ingredient.id;
         const ingredientName = detail.ingredient.name;
 
+        // Asegúrate de que weight sea un número
+        const weight = Number(detail.weight); // Convierto a número
+
         // Si el ingrediente ya existe en el objeto, sumamos el peso.
         if (detailSummary[ingredientId]) {
-          detailSummary[ingredientId].weight += detail.weight;
+          detailSummary[ingredientId].weight += weight; // Sumar pesos
         } else {
           // Si no existe, lo creamos con el peso actual.
           detailSummary[ingredientId] = {
             id: ingredientId,
             name: ingredientName,
-            weight: detail.weight,
+            weight: weight, // Guardar peso como número
           };
         }
       });
