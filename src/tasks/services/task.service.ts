@@ -18,7 +18,7 @@ export class TaskService {
 
   async findAll() {
     return await this.taskRepo.find({
-      relations: ['product.items.ingredient', 'details.ingredient'],
+      relations: ['product.items.ingredient', 'details.ingredient', 'details.user'],
     });
   }
 
@@ -26,7 +26,6 @@ export class TaskService {
     const ingredients = await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient'],
     });
-
     // Creamos dos objetos para almacenar la agrupación de los ingredientes tanto en items como en details.
     const itemSummary = {};
     const detailSummary = {};
@@ -36,6 +35,7 @@ export class TaskService {
       batch.product.items.forEach((item) => {
         const ingredientId = item.ingredient.id;
         const ingredientName = item.ingredient.name;
+        const controlUnit = item.controlUnit;
 
         // Si el ingrediente ya existe en el objeto, sumamos la cantidad.
         if (itemSummary[ingredientId]) {
@@ -46,6 +46,7 @@ export class TaskService {
             id: ingredientId,
             name: ingredientName,
             cuantity: item.cuantity,
+            controlUnit,
           };
         }
       });
@@ -81,6 +82,7 @@ export class TaskService {
         name: item.name,
         cuantity: item.cuantity,
         weight: detail.weight,
+        controlUnit: item.controlUnit,
       };
     });
     return comparison;
@@ -89,7 +91,7 @@ export class TaskService {
   async findOne(id: number) {
     return await this.taskRepo.findOne({
       where: { id },
-      relations: ['product.items.ingredient', 'details.ingredient'],
+      relations: ['product.items.ingredient', 'details.ingredient', 'details.user'],
     });
   }
 

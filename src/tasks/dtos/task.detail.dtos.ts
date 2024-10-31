@@ -9,6 +9,9 @@ export class CreateTaskDetailDto {
   readonly itemId: number;
 
   @IsNumber()
+  readonly userId: number;
+
+  @IsNumber()
   readonly weight: number;
 
   @IsNumber()

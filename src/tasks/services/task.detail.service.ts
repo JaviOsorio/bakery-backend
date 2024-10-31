@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Task } from './../entities/task.entity';
 import { TaskDetail } from './../entities/task.detail.entity';
 import { Ingredient } from './../../recipes/entities/ingredient.entity';
+import { User } from './../../users/entities/user.entity';
 import {
   CreateTaskDetailDto,
   UpdateTaskDetailDto,
@@ -16,6 +17,7 @@ export class TaskDetailService {
     @InjectRepository(TaskDetail)
     private readonly taskDetailRepo: Repository<TaskDetail>,
     @InjectRepository(Task) private readonly taskRepo: Repository<Task>,
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(Ingredient)
     private readonly ingredienRepo: Repository<Ingredient>,
   ) {}
@@ -38,6 +40,13 @@ export class TaskDetailService {
       throw new Error('Ingredient not found');
     }
 
+    const user = await this.userRepo.findOne({
+      where: { id: data.userId },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
     // Buscar el `Task` usando el `taskId` del DTO
     const task = await this.taskRepo.findOne({ where: { id: data.taskId } });
     if (!task) {
@@ -49,6 +58,7 @@ export class TaskDetailService {
       weight: data.weight,
       itemId: data.itemId,
       ingredient,
+      user,
       task,
     });
 

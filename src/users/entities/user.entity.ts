@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
+import { TaskDetail } from './../../tasks/entities/task.detail.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -33,6 +35,9 @@ export class User {
 
   @Column({ name: 'reset_token', type: 'varchar', length: 1000, default: '' })
   resetToken: string;
+
+  @OneToMany(() => TaskDetail, (taskDetail) => taskDetail.user)
+  details: TaskDetail[];
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -9,6 +9,7 @@ import {
 
 import { Task } from './task.entity';
 import { Ingredient } from './../../recipes/entities/ingredient.entity';
+import { User } from './../../users/entities/user.entity';
 
 @Entity({ name: 'task_detail' })
 export class TaskDetail {
@@ -24,6 +25,10 @@ export class TaskDetail {
 
   @Column({ name: 'item_id' })
   itemId: number;
+
+  @ManyToOne(() => User, (user) => user.details)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @ManyToOne(() => Task, (task) => task.details)
   @JoinColumn({
