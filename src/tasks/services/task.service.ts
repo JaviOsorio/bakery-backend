@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
 import { Task } from './../entities/task.entity';
 import { Product } from './../../recipes/entities/product.entity';
@@ -22,9 +22,12 @@ export class TaskService {
     });
   }
 
-  async filter() {
+  async filter(starDate, endDate) {
     const ingredients = await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient'],
+      where: {
+        startDate: Between(new Date(starDate), new Date(endDate)),
+      },
     });
 
     // Creamos dos objetos para almacenar la agrupación de los ingredientes tanto en items como en details.

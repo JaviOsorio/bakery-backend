@@ -27,9 +27,12 @@ export class TaskController {
   }
 
   @Roles(Role.SUPERADMIN, Role.ADMIN)
-  @Get('filter')
-  async filter() {
-    return await this.taskService.filter();
+  @Get('filter/:startDate/:endDate')
+  async filter(
+    @Param('startDate') startDate: string,
+    @Param('endDate') endDate: string,
+  ) {
+    return await this.taskService.filter(startDate, endDate);
   }
 
   @Roles(Role.SUPERADMIN, Role.ADMIN, Role.USER)
