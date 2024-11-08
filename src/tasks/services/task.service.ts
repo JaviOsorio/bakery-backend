@@ -16,9 +16,12 @@ export class TaskService {
     private taskDetailService: TaskDetailService,
   ) {}
 
-  async findAll() {
+  async findAll(starDate, endDate) {
     return await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient', 'details.user'],
+      where: {
+        startDate: Between(new Date(starDate), new Date(endDate)),
+      },
     });
   }
 

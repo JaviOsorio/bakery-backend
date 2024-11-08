@@ -21,9 +21,12 @@ export class TaskController {
   constructor(private taskService: TaskService) {}
 
   @Roles(Role.SUPERADMIN, Role.ADMIN, Role.USER)
-  @Get()
-  async findAll() {
-    return await this.taskService.findAll();
+  @Get(':startDate/:endDate')
+  async findAll(
+    @Param('startDate') startDate: string,
+    @Param('endDate') endDate: string,
+  ) {
+    return await this.taskService.findAll(startDate, endDate);
   }
 
   @Roles(Role.SUPERADMIN, Role.ADMIN)
