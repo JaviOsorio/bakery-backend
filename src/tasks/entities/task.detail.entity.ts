@@ -30,7 +30,9 @@ export class TaskDetail {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Task, (task) => task.details)
+  @ManyToOne(() => Task, (task) => task.details, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'task_id',
   })
