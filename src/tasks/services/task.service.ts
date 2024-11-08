@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
+// import { Cron } from 'nestjs-schedule';
+import { Cron } from '@nestjs/schedule';
 
 import { Task } from './../entities/task.entity';
 import { Product } from './../../recipes/entities/product.entity';
@@ -18,9 +20,16 @@ export class TaskService {
 
   async findAll(starDate, endDate) {
     return await this.taskRepo.find({
-      relations: ['product.items.ingredient', 'details.ingredient', 'details.user'],
+      relations: [
+        'product.items.ingredient',
+        'details.ingredient',
+        'details.user',
+      ],
       where: {
-        startDate: Between(new Date(`${starDate} 00:00`), new Date(`${endDate} 11:59`)),
+        startDate: Between(
+          new Date(`${starDate} 00:00`),
+          new Date(`${endDate} 11:59`),
+        ),
       },
     });
   }
@@ -29,7 +38,10 @@ export class TaskService {
     const ingredients = await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient'],
       where: {
-        startDate: Between(new Date(`${starDate} 00:00`), new Date(`${endDate} 11:59`)),
+        startDate: Between(
+          new Date(`${starDate} 00:00`),
+          new Date(`${endDate} 11:59`),
+        ),
       },
     });
 
@@ -104,7 +116,11 @@ export class TaskService {
   async findOne(id: number) {
     return await this.taskRepo.findOne({
       where: { id },
-      relations: ['product.items.ingredient', 'details.ingredient', 'details.user'],
+      relations: [
+        'product.items.ingredient',
+        'details.ingredient',
+        'details.user',
+      ],
     });
   }
 
@@ -153,5 +169,12 @@ export class TaskService {
   async remove(id: number) {
     const task = await this.findOne(id);
     return await this.taskRepo.delete(id);
+  }
+
+  // @Cron('*/1 * * * *')
+  @Cron('0 23 * * *')
+  async removeTasksPending() {
+    console.log('task executed');
+    await this.taskRepo.delete({ status: 'Pendiente' });
   }
 }

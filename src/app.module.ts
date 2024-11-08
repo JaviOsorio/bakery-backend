@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RecipesModule } from './recipes/recipes.module';
@@ -18,6 +19,7 @@ import { TasksModule } from './tasks/tasks.module';
       load: [config],
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     RecipesModule,
     DatabaseModule,
     UsersModule,
