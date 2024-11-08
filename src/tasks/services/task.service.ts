@@ -20,7 +20,7 @@ export class TaskService {
     return await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient', 'details.user'],
       where: {
-        startDate: Between(new Date(starDate), new Date(endDate)),
+        startDate: Between(new Date(`${starDate} 00:00`), new Date(`${endDate} 11:59`)),
       },
     });
   }
@@ -29,7 +29,7 @@ export class TaskService {
     const ingredients = await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient'],
       where: {
-        startDate: Between(new Date(starDate), new Date(endDate)),
+        startDate: Between(new Date(`${starDate} 00:00`), new Date(`${endDate} 11:59`)),
       },
     });
 
