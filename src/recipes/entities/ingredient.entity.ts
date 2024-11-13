@@ -19,6 +19,9 @@ export class Ingredient {
   @Column({ type: 'varchar', length: 255, unique: true })
   name: string;
 
+  @Column({ name: 'margin_tolerance', type: 'int' })
+  marginTolerance: number;
+
   @Column({ type: 'varchar', length: 255, default: 'Active' })
   status: string;
 
