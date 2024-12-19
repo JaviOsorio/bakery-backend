@@ -171,7 +171,7 @@ export class TaskService {
     return await this.taskRepo.delete(id);
   }
 
-  @Cron('0 23 * * *')
+  // @Cron('0 23 * * *')
   async removeTasksPending() {
     console.log('task executed');
     await this.taskRepo.delete({ status: 'Pendiente' });
