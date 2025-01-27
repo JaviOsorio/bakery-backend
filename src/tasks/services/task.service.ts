@@ -35,7 +35,7 @@ export class TaskService {
   }
 
   async filter(starDate, endDate) {
-    const ingredients = await this.taskRepo.find({
+    const tasks = await this.taskRepo.find({
       relations: ['product.items.ingredient', 'details.ingredient'],
       where: {
         startDate: Between(
@@ -45,12 +45,31 @@ export class TaskService {
       },
     });
 
+    // Agrupar los productos y contar cuántas veces aparecen
+    const groupedProducts = tasks.reduce((acc, task) => {
+      const product = task.product;
+      if (product) {
+        if (!acc[product.id]) {
+          acc[product.id] = {
+            id: product.id,
+            name: product.name, // Si el producto tiene un nombre
+            count: 0,
+          };
+        }
+        acc[product.id].count++; // Incrementar el conteo para este producto
+      }
+      return acc;
+    }, {});
+
+    // Convertir el objeto de agrupamiento en un array para facilitar su uso
+    const groupedProductsArray = Object.values(groupedProducts);
+
     // Creamos dos objetos para almacenar la agrupación de los ingredientes tanto en items como en details.
     const itemSummary = {};
     const detailSummary = {};
 
     // Función para agrupar ingredientes en los items.
-    ingredients.forEach((batch) => {
+    tasks.forEach((batch) => {
       batch.product.items.forEach((item) => {
         const ingredientId = item.ingredient.id;
         const ingredientName = item.ingredient.name;
@@ -75,7 +94,7 @@ export class TaskService {
     });
 
     // Función para agrupar ingredientes en los details.
-    ingredients.forEach((batch) => {
+    tasks.forEach((batch) => {
       batch.details.forEach((detail) => {
         const ingredientId = detail.ingredient.id;
         const ingredientName = detail.ingredient.name;
@@ -110,7 +129,7 @@ export class TaskService {
         controlUnit: item.controlUnit,
       };
     });
-    return comparison;
+    return { comparison, products: groupedProductsArray };
   }
 
   async findOne(id: number) {
